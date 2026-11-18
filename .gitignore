@@ -1,0 +1,3 @@
+*.local.json
+.promptfoo/
+__pycache__/

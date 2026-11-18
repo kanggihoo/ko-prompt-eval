@@ -1,0 +1,99 @@
+{
+ "duration_api_ms": 6748,
+ "stop_reason": "end_turn",
+ "total_cost_usd": 0.035566600000000004,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 6513,
+  "cache_read_input_tokens": 12106,
+  "output_tokens": 830,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 6513,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 830,
+    "cache_read_input_tokens": 12106,
+    "cache_creation_input_tokens": 6513,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6513
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "modelUsage": {
+  "claude-sonnet-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 830,
+   "cacheReadInputTokens": 12106,
+   "cacheCreationInputTokens": 6513,
+   "webSearchRequests": 0,
+   "costUSD": 0.035566600000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 0,
+   "cacheCreationEphemeral5mInputTokens": 0,
+   "cacheCreationEphemeral1hInputTokens": 6513,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "permission_denials": [],
+ "terminal_reason": "completed",
+ "fast_mode_state": "off",
+ "fast_mode_disabled_reason": "sdk_opt_in_required",
+ "subagent_stats": {
+  "spawned": 0,
+  "requested": {
+   "background": 0,
+   "foreground": 0,
+   "unset": 0
+  },
+  "started_in_background": 0,
+  "max_depth": 0,
+  "spawned_by_subagents": 0,
+  "completed": 0,
+  "failed": 0,
+  "killed": {
+   "parent": 0,
+   "user": 0,
+   "system": 0
+  },
+  "refused": {
+   "depth_limit": 0,
+   "concurrency_limit": 0,
+   "budget": 0
+  },
+  "by_type": {}
+ },
+ "safety_stops": 0,
+ "is_error": false,
+ "num_turns": 1,
+ "subtype": "success",
+ "api_error_status": null,
+ "result": "**로그 flush**는 메모리에 있는 로그를 **디스크에 실제로 써서 저장하는 것**을 말합니다.\n\n### 왜 필요한가\nDB는 성능 때문에 로그도 일단 **메모리(log buffer)** 에 먼저 적어둡니다. 그런데 메모리는 정전이나 서버 크래시가 나면 사라집니다. 그래서 커밋 시점에는 이 로그를 **디스크로 내려보내서** 안전하게 만들어야 합니다. 이 작업이 flush입니다.\n\n### 흐름\n1. 트랜잭션이 데이터를 변경함\n2. 변경 내용이 **로그 버퍼(메모리)** 에 기록됨\n3. `COMMIT` 요청이 들어옴\n4. 로그 버퍼를 **디스크의 로그 파일에 기록하고 flush** (보통 `fsync` 호출로 OS 캐시까지 확실히 디스크에 내림)\n5. flush가 끝나면 DB가 \"커밋 성공\"이라고 응답\n\n### 비유\n메모장에 적어둔 것(메모리)을 **저장 버튼을 눌러 파일로 저장**(디스크)하는 것과 비슷합니다. 저장 전에 컴퓨터가 꺼지면 날아가지만, 저장 후에는 남아 있습니다.\n\n### 왜 로그만 flush하고 데이터 파일은 안 하나\n- 로그는 **순차적으로 이어 쓰기**만 하면 되어서 빠름\n- 데이터 파일은 여기저기 **흩어진 위치(랜덤 I/O)** 를 수정해야 해서 느림\n- 로그만 디스크에 있으면, 장애 후 **로그를 다시 재생(redo)** 해서 데이터를 복구할 수 있음\n\n그래서 `COMMIT` 때는 **로그만 확실히 디스크에 저장**하고, 데이터 페이지는 나중에 천천히 반영합니다.\n\n### 참고\nMySQL InnoDB에서는 `innodb_flush_log_at_trx_commit` 설정으로 이 동작을 조절합니다. 값이 `1`이면 커밋마다 flush해서 가장 안전하고, `0`이나 `2`면 더 빠르지만 장애 시 최근 트랜잭션이 유실될 수 있습니다.",
+ "ttft_ms": 6945,
+ "type": "result",
+ "duration_ms": 6971,
+ "ttft_stream_ms": 832,
+ "time_to_request_ms": 220,
+ "first_content_frame_ms": 832,
+ "queued_turn_count": 0,
+ "result_index": 0
+}
