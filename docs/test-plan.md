@@ -94,19 +94,34 @@ harness를 만들기 전에 실행해서 확인해야 할 사실(T)과, 그 위�
 - **볼 것:** rate limit 오류가 나는지, 전체 시간이 얼마인지.
 - **판단:** promptfoo `-j`(동시 실행 수)를 정합니다.
 
+### T12. Gemini(agy)를 실험 모델로 쓸 수 있는가
+
+- **상태:** 2026-11-19 일부 확인. agy `-p` print mode가 있고, `--output-format json`이 `response`, `duration_seconds`, `usage`(input, output, thinking, cache_read token)를 줍니다. 비용 필드는 없습니다.
+- **쓸 수 있는 모델(`agy models`):** `gemini-3.8-flash-high|medium|low`. 그 밖에 `claude-sonnet-4-6`, `claude-opus-4-6-thinking`, `gpt-oss-120b-medium`이 있습니다.
+- **canary 결과:**
+  - 전역 `CLAUDE.md` 내용과 PONYTAIL hook은 모른다고 답했습니다. `~/.gemini/GEMINI.md`는 없습니다.
+  - 설치된 skill 목록 25개가 context에 들어가 있었습니다.
+  - 입력은 17.5k token에 cache read 25.7k token이었습니다.
+- **남은 확인:**
+  1. skill 목록과 `~/.gemini/hooks`를 끄는 방법. `--settings`나 빈 HOME, `--sandbox`로 시도합니다.
+  2. 변형을 system prompt 자리에 넣는 방법. agy에는 `--append-system-prompt-file`이 없어서 prompt 앞에 붙이는 방식과 결과가 다른지 봐야 합니다.
+  3. `agy -p` 호출마다 agy 로그에 대화가 생기므로, `mine.py`가 실험 호출을 후보로 뽑지 않게 거르는 방법.
+  4. 비용은 가격표로 추정합니다.
+- **판단:** 변형을 넣는 자리가 Claude와 다르면, Gemini 결과는 "prompt 앞에 붙임" 조건으로 따로 표시하고 비교합니다.
+
 ## 첫 실험
 
 ### E1. `reexplain`: 긴 skill이 짧은 규칙보다 나은가
 
 - **전제:** T1, T2, T4(또는 대안), T7을 먼저 끝냅니다.
-- **구성:** case 9건 × 변형 4개(없음, `claude-md-defaults`, `explain-clearly`, ste-ko) × Sonnet × repeat 3 = 108회. judge 호출은 따로 셉니다.
+- **구성:** case 12건 × 변형 4개(없음, `claude-md-defaults`, `explain-clearly`, ste-ko) × Sonnet × repeat 3 = 144회. judge 호출은 따로 셉니다.
 - **기록:** 출력, 비용, 시간, 입력·출력 token, 구조 비율, lint, judge 항목 점수, 사람 선택.
 - **보는 순서:**
   1. 변형 이름을 가린 채 case마다 출력 4개를 읽고, 가장 이해되는 것 하나와 이해되지 않는 것을 고릅니다.
   2. 이름을 열고 변형별로 선택 횟수를 셉니다.
   3. 비용과 시간 차이를 같이 봅니다.
 - **판단 기준 (제안):**
-  - `explain-clearly`가 `claude-md-defaults`보다 9건 중 6건 이상에서 선택되면, 추가 token(약 1.5k 입력, 출력 증가분)을 쓸 만하다고 봅니다.
+  - `explain-clearly`가 `claude-md-defaults`보다 12건 중 8건 이상에서 선택되면, 추가 token(약 1.5k 입력, 출력 증가분)을 쓸 만하다고 봅니다.
   - 비슷하면 짧은 규칙을 쓰고, `explain-clearly`에서 차이를 만든 규칙만 짧은 규칙으로 옮겨 다시 비교합니다.
 
 ### E2. 모델 비교

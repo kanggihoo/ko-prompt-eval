@@ -13,7 +13,7 @@ Claude가 한국어로 어렵게 설명하는 문제를 고치려고 만든 prom
 
 조사와 데이터 수집까지 끝났고, 실행 harness는 아직 없습니다.
 
-- 로그에서 뽑은 평가 case 9건: [`data/cases.jsonl`](data/cases.jsonl)
+- 로그에서 뽑은 평가 case 12건 (Claude 6, Codex 3, Gemini 3): [`data/cases.jsonl`](data/cases.jsonl)
 - 구독 로그인으로 격리 실행이 되는 것과, case 1건을 baseline과 `explain-clearly`로 돌린 결과: [`experiments/2026-11-19-pilot/`](experiments/2026-11-19-pilot/README.md)
 - 다음 작업은 [`docs/test-plan.md`](docs/test-plan.md)의 검증 항목을 실행하고 promptfoo config를 만드는 것입니다.
 
