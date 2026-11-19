@@ -14,7 +14,17 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--session-logs', default=os.path.expanduser('~/Desktop/my-skills/skills/in-progress/session-logs'),
                 help='sessions.py가 있는 폴더')
 ap.add_argument('--out', default='data/candidates.local.json')
+ap.add_argument('--exclude-cwd', action='append', default=['/tmp/koeval-run'],
+                help='실험 runner가 쓰는 cwd. 이 아래에서 생긴 세션은 실험 호출이라 후보에서 뺀다 (반복 가능)')
 a = ap.parse_args()
+EXCLUDE = [os.path.realpath(p) for p in a.exclude_cwd]  # macOS는 /tmp를 /private/tmp로 기록한다
+
+
+def excluded(cwd):
+    if not cwd:
+        return False
+    p = os.path.realpath(cwd)
+    return any(p == x or p.startswith(x + os.sep) for x in EXCLUDE)
 sys.path.insert(0, a.session_logs)
 import sessions as S  # noqa: E402
 
@@ -41,8 +51,11 @@ def models_by_line(s):
     return out
 
 
-out = []
+out, skipped = [], 0
 for s in S.selectable(S.discover('~/.claude/projects', '~/.codex/sessions')):
+    if excluded(s['cwd']):
+        skipped += 1
+        continue
     try:
         ev = S.parse(s)['events']
     except Exception:
@@ -62,4 +75,4 @@ for s in S.selectable(S.discover('~/.claude/projects', '~/.codex/sessions')):
 
 os.makedirs(os.path.dirname(a.out) or '.', exist_ok=True)
 json.dump(out, open(a.out, 'w'), ensure_ascii=False, indent=1)
-print(len(out), dict(Counter(o['agent'] for o in out)), '->', a.out)
+print(len(out), dict(Counter(o['agent'] for o in out)), f'(실험 cwd 세션 {skipped}개 제외)', '->', a.out)

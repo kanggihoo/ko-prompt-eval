@@ -1,6 +1,6 @@
 # 조사 내용
 
-2026-11-19에 정리했습니다. 오픈소스 내용은 아래 적은 commit 기준이고, promptfoo와 prompt-optimizer는 [oss-analysis](https://github.com/kanggihoo/oss-analysis/tree/main/prompt-eval/reports)의 분석 리포트를 근거로 했습니다. 리포트 경로는 `PF` = `prompt-eval/reports/promptfoo/`, `PO` = `prompt-eval/reports/prompt-optimizer/`로 줄여 씁니다. 리포트는 코드를 읽고 쓴 것이고 실행해서 확인한 것은 아닙니다.
+2026-11-19에 정리했습니다. 이 문서는 조사 기록이고, 그 뒤에 정한 것은 [`decisions.md`](decisions.md)가 우선합니다. 오픈소스 내용은 아래 적은 commit 기준이고, promptfoo와 prompt-optimizer는 [oss-analysis](https://github.com/kanggihoo/oss-analysis/tree/main/prompt-eval/reports)의 분석 리포트를 근거로 했습니다. 리포트 경로는 `PF` = `prompt-eval/reports/promptfoo/`, `PO` = `prompt-eval/reports/prompt-optimizer/`로 줄여 씁니다. 리포트는 코드를 읽고 쓴 것이고 실행해서 확인한 것은 아닙니다.
 
 ## 1. 출발점
 
@@ -154,7 +154,15 @@ prompt 평가 CLI입니다. 이번 목적의 대부분을 기본 기능으로 �
 
 ### 함정
 
-[`implementation.md`](implementation.md) 5절에 모았습니다.
+- **cache:** 응답 cache가 기본으로 켜져 있습니다(디스크, TTL 14일). cache가 적중한 행은 시간이 저장값이고 비용이 0입니다(`PF/capabilities/response-cache.md` R-01, R-16).
+- **`exec` cache key:** 명령에 직접 나온 파일만 해시합니다. wrapper가 따로 읽는 SKILL.md는 key에 들어가지 않습니다(R-19).
+- **grader:** `OPENAI_API_KEY`가 환경에 있으면 기본 grader가 OpenAI가 됩니다(`PF/capabilities/default-providers.md` R-04).
+- **비용 기록:** 저장 단계에서 "미보고"와 "0"이 구분되지 않습니다(`PF/capabilities/eval-records.md` R-11).
+- **API key:** `{{env.KEY}}` 값이 DB에 평문으로 저장됩니다(`PF/capabilities/results-store.md` R-37).
+- **`view` 서버:** 인증 없이 모든 interface에 바인딩됩니다.
+- **Nunjucks:** 템플릿 변수로 넣은 SKILL.md의 `{{`, `{%`가 템플릿으로 해석됩니다.
+
+이 함정들과 "세 모델이 모두 구독 CLI라 결국 `exec` provider가 된다"는 점 때문에 promptfoo는 지금 쓰지 않습니다([`decisions.md`](decisions.md) D-10, [토론 I1](discussions/2026-11-19-eval-automation.md)).
 
 ## 6. prompt-optimizer
 
@@ -194,6 +202,6 @@ canary 실측 결과(Haiku):
 
 ## 8. 결론
 
-- 실행 엔진은 promptfoo로 충분합니다. 직접 만들 것은 데이터셋, 설명 task용 judge rubric, 그리고 promptfoo가 비워 둔 것(반복 실행 점수 분산, judge 비용, 스킬 버전별 이력)입니다.
+- 처음에는 promptfoo를 실행 엔진으로 권했습니다. 이후 토론과 사용자 결정으로, CLI를 직접 부르는 얇은 Python runner로 바꿨습니다([`decisions.md`](decisions.md) D-10). 직접 만들 것은 runner, 데이터셋, 설명 task용 judge rubric, blind 판정 화면입니다.
 - 한국어 오픈소스 두 곳 모두 runner, 비용과 시간 기록, 짧은 규칙 대 긴 규칙 비교가 없습니다. 이 repo가 처음 묻는 질문이 그 비교입니다.
 - 데이터는 합성보다 실제 실패 로그가 낫습니다. 실제로 이해하지 못한 답변이 이미 302건 후보로 있습니다.
