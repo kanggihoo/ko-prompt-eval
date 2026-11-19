@@ -13,9 +13,9 @@
 | `question` | 직전 답변을 부른 사용자 메시지 (1500자에서 자름) |
 | `prior_answer` | 사용자가 이해하지 못한 assistant 답변. 직전 user turn 이후 assistant 텍스트를 모두 이어 붙인 것이라, tool 실행 중간의 짧은 안내문이 섞여 있을 수 있음 |
 | `reaction` | "뭔 말이야"류 사용자 반응. 욕설을 포함해 원문 그대로 |
-| `gap` | 직전 답변이 빠뜨린 연결에 대한 해석. 생성 모델과 사람 판정 화면에는 보여 주지 않음. judge는 `gap_reviewed: true`일 때만 씀 (`docs/decisions.md` D-6) |
-| `gap_author` | `gap`을 쓴 쪽. 현재 12건 모두 `claude`. `explain-clearly`의 "빠진 연결" 관점으로 썼기 때문에, 검토 없이 채점 기준으로 쓰면 `explain-clearly`에 유리함 |
-| `gap_reviewed` | 사용자가 `gap`을 검토했는지. 검토는 사람 판정이 끝난 뒤에 함 (판정 전에 읽으면 해석이 판정을 끌고 감) |
+| `gap` | 직전 답변이 빠뜨린 연결에 대한 해석. 채점용 AI의 평가 기준(`gap_filled`)으로만 쓰고, 생성 모델과 사람 판정 화면에는 보여 주지 않음 (`docs/decisions.md` D-6) |
+| `gap_author` | `gap`을 쓴 쪽. 현재 12건 모두 `claude`. `explain-clearly`의 "빠진 연결" 관점으로 썼기 때문에 `gap_filled` 점수는 `explain-clearly`에 조금 유리할 수 있음. 해석할 때 감안 |
+| `gap_reviewed` | 사용자가 `gap`을 검토했는지. 검토는 필수가 아님. 고치고 싶으면 사람 판정이 끝난 뒤에 함 (판정 전에 읽으면 해석이 판정을 끌고 감) |
 
 ## 현재 case (12건)
 
