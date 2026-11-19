@@ -116,10 +116,10 @@ assistant: <prior_answer>
 ## 5. 주의할 점
 
 - **`--tools ""` 뒤 prompt:** `--tools`는 값을 여러 개 받아서, 바로 뒤에 오는 prompt까지 도구 이름으로 먹습니다. 2026-11-19 첫 시도가 이것으로 실패했습니다. prompt 앞에 `--`를 붙입니다.
-- **`--tools`와 MCP:** 개인 측정 기록(2026-11-16)에 따르면, MCP가 켜진 상태에서 `--tools`에 `ToolSearch`가 없으면 MCP 도구 정의가 처음부터 전부 실립니다. 그때 406k token, 첫 호출 $3.26이 나갔습니다. `--safe-mode`는 MCP를 끄므로 이번 측정에서는 문제가 없었지만, 안전장치로 `--strict-mcp-config`를 함께 줍니다.
-- **`--max-budget-usd`:** 같은 기록에서 상한 $1인데 요청 한 번에 $3.26이 그대로 나갔습니다. 요청 하나가 상한을 넘는 것은 막지 못하므로 비용 보호 장치로 믿지 않습니다.
+- **`--tools`와 MCP:** [`cost-notes.md`](cost-notes.md) 1절에 따르면, MCP가 켜진 상태에서 `--tools`에 `ToolSearch`가 없으면 MCP 도구 정의가 처음부터 전부 실립니다. 그때 406k token, 첫 호출 $3.26이 나갔습니다. `--safe-mode`는 MCP를 끄므로 이번 측정에서는 문제가 없었지만, 안전장치로 `--strict-mcp-config`를 함께 줍니다.
+- **`--max-budget-usd`:** [`cost-notes.md`](cost-notes.md) 1절에서 상한 $1인데 요청 한 번에 $3.26이 그대로 나갔습니다. 요청 하나가 상한을 넘는 것은 막지 못하므로 비용 보호 장치로 믿지 않습니다.
 - **`--bare`:** `ANTHROPIC_API_KEY`나 apiKeyHelper만 읽고 구독 로그인을 읽지 않아서 쓰지 않습니다. 문서상 앞으로 `-p` 기본값이 bare가 될 예정입니다. 그렇게 바뀌면 이 harness가 깨질 수 있으니 CLI를 업데이트한 뒤에는 한 번 확인합니다.
-- **Codex 격리 flag:** `--ephemeral`과 `--ignore-user-config`는 `codex exec` 전용입니다. `project_doc_max_bytes=0`은 전역 `AGENTS.md`를 끄지 못합니다(같은 개인 측정 기록). skills 목록과 plugins를 끄는 설정 조합은 T6에서 확인합니다.
+- **Codex 격리 flag:** `--ephemeral`과 `--ignore-user-config`는 `codex exec` 전용입니다. `project_doc_max_bytes=0`은 전역 `AGENTS.md`를 끄지 못합니다([`cost-notes.md`](cost-notes.md) 2절). skills 목록과 plugins를 끄는 설정 조합은 T6에서 확인합니다.
 - **cache와 비용 해석:** cache 쓰기와 읽기는 가격이 다릅니다. pilot에서 `explain-clearly` 본문 약 1.5k token은 cache 쓰기로 처리됐습니다. 그래서 변형 사이 비용은 같은 repeat 번호끼리 비교하고, cache 성분을 함께 봅니다. cache를 쓰지 않은 입력이 줄었다고 요금이 그만큼 줄었다고 읽지 않습니다.
 - **로그 오염:** `agy -p`는 호출마다 agy 로그에 대화를 남깁니다. `claude -p`도 `--no-session-persistence` 없이는 세션을 남깁니다. 2026-11-19 canary 호출이 `/private/tmp/iso-test` 세션으로 남은 것을 확인했습니다. `mine.py`는 기본으로 `/tmp/koeval-run`을 realpath로 비교해 제외합니다(`--exclude-cwd`로 추가 가능).
 - **격리 확인은 매번 하지 않습니다(D-12).** 결과가 이상하면 먼저 확인할 것은 이렇습니다.

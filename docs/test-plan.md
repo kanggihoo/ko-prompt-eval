@@ -51,7 +51,7 @@ D-10으로 보류합니다. 나중에 promptfoo로 옮길 때 [`research.md`](re
 
 - **방법:** `codex exec --ephemeral --ignore-user-config --sandbox read-only --skip-git-repo-check --json`을 빈 cwd에서 실행하고 T1 canary를 돌립니다.
 - **볼 것:**
-  1. 전역 `~/.codex/AGENTS.md` 내용을 모르는지. 개인 측정 기록에 따르면 `project_doc_max_bytes=0`으로는 전역 `AGENTS.md`가 꺼지지 않습니다.
+  1. 전역 `~/.codex/AGENTS.md` 내용을 모르는지. [`cost-notes.md`](cost-notes.md) 2절에 따르면 `project_doc_max_bytes=0`으로는 전역 `AGENTS.md`가 꺼지지 않습니다.
   2. skills 목록과 plugins가 빠지는지. 후보는 `--disable plugins`, `-c skills.include_instructions=false -c skills.max_context_tokens=1`입니다.
   3. 명령 실행 없이 텍스트만 답하는지.
   4. JSONL에서 token 수를 얻을 수 있는지. 비용은 가격표로 추정합니다.

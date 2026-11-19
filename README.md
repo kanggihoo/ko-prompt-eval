@@ -27,6 +27,7 @@ Claude가 한국어로 어렵게 설명하는 문제를 고치려고 만든 prom
 | [`docs/decisions.md`](docs/decisions.md) | 지금까지 정한 것과 출처(사용자 / 토론) |
 | [`docs/implementation.md`](docs/implementation.md) | 실행 흐름, 실험 폴더 계약, task와 prompt, runner와 adapter 명령, 주의할 점, 구현 단계 |
 | [`docs/evaluation.md`](docs/evaluation.md) | 평가 기준 질문, 사람 판정 절차, LLM judge 항목, 자동 지표, 집계와 보고 |
+| [`docs/cost-notes.md`](docs/cost-notes.md) | Claude Code·Codex 실행 비용 측정 기록(시작 context, flag 함정)과 이 repo에서 잰 값 |
 | [`docs/test-plan.md`](docs/test-plan.md) | 실행해서 확인할 사실(T1–T12)과 실험(E1–E3) |
 | [`docs/discussions/`](docs/discussions/) | Claude와 Codex 토론 요약 2개(실행·증거·자동화, 평가 지표) |
 | [`data/README.md`](data/README.md) | 데이터셋 schema, 수집 방법, 한계 |
