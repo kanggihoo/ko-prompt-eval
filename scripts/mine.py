@@ -14,8 +14,9 @@ ap = argparse.ArgumentParser()
 ap.add_argument('--session-logs', default=os.path.expanduser('~/Desktop/my-skills/skills/in-progress/session-logs'),
                 help='sessions.py가 있는 폴더')
 ap.add_argument('--out', default='data/candidates.local.json')
-ap.add_argument('--exclude-cwd', action='append', default=['/tmp/koeval-run'],
-                help='실험 runner가 쓰는 cwd. 이 아래에서 생긴 세션은 실험 호출이라 후보에서 뺀다 (반복 가능)')
+ap.add_argument('--exclude-cwd', action='append',
+                default=[os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'experiments')],
+                help='실험 runner가 쓰는 cwd(기본: 이 repo의 experiments/). 이 아래에서 생긴 세션은 실험 호출이라 후보에서 뺀다 (반복 가능)')
 a = ap.parse_args()
 EXCLUDE = [os.path.realpath(p) for p in a.exclude_cwd]  # macOS는 /tmp를 /private/tmp로 기록한다
 
