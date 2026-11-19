@@ -28,7 +28,7 @@
 | D-11 | 증거의 정본은 repo 안의 실험 폴더 파일이다. 파일 계약은 [`implementation.md`](implementation.md) 2절 (I2, I14) | 토론 |
 | D-12 | 실행 전 격리 canary와 양성 대조는 매번 하지 않는다. 격리 문제가 드러나면 그때 대응한다 (I4). Claude는 "CLI 버전이 바뀐 첫 실행에만 canary 1회"를 권했지만 채택하지 않았다 | 사용자 |
 | D-13 | 생성 호출은 도구를 끈 text-only로 한다. Claude는 `--tools ""`. 도구 사용 신호는 기록한다 (I16) | 토론 + 사용자 |
-| D-14 | 실험 호출은 전용 cwd(`/tmp/koeval-run`)에서 하고 세션을 저장하지 않는다. `mine.py`는 그 cwd를 제외한다 (I10) | 토론 |
+| D-14 | 실험 호출은 결과를 남기는 실험 폴더(`experiments/<날짜>-<이름>/`)를 cwd로 하고, 세션을 저장하지 않는다. repo 안이라 git branch와 commit 메시지가 context에 들어가므로 `includeGitInstructions:false`로 끈다(2026-11-19 canary, T1). `mine.py`는 `experiments/`를 제외한다. 처음에는 전용 cwd `/tmp/koeval-run`이었다 (I10) | 토론 → 사용자가 2026-11-19 변경 |
 | D-15 | 단계는 `run` 뒤에 `metrics`, `judge`, `report`가 각각 `results.jsonl`을 읽는 구조다 (I7) | 토론 |
 | D-16 | 실행 시작 시 입력 사본을 `inputs/`에 만들고, 실행은 사본만 읽는다 (I14) | 토론 |
 | D-17 | 실행 실패와 품질 판정을 분리한다 (I15) | 토론 |

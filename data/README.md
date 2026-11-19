@@ -48,7 +48,7 @@ Gemini를 실험 대상 모델로 쓰는 것은 로그가 아니라 직접 호�
 
 ## 수집 방법
 
-1. `python3 scripts/mine.py`를 실행합니다. my-skills의 session-logs 스킬(`sessions.py`)로 `~/.claude/projects`, `~/.codex/sessions`, `~/.gemini/antigravity-cli`를 읽고, 혼란을 표현한 사용자 메시지(정규식은 스크립트 안의 `PAT`)와 그 직전 답변, 그 답변을 낸 모델을 `data/candidates.local.json`에 씁니다. 모델은 `sessions.py`가 버리므로 `mine.py`가 원본 줄을 따로 읽습니다. 2026-11-19 기준 302건이 나왔습니다. 실험 runner의 cwd(`/tmp/koeval-run`)에서 생긴 세션은 실험 호출이라 기본으로 제외합니다(`--exclude-cwd`로 추가).
+1. `python3 scripts/mine.py`를 실행합니다. my-skills의 session-logs 스킬(`sessions.py`)로 `~/.claude/projects`, `~/.codex/sessions`, `~/.gemini/antigravity-cli`를 읽고, 혼란을 표현한 사용자 메시지(정규식은 스크립트 안의 `PAT`)와 그 직전 답변, 그 답변을 낸 모델을 `data/candidates.local.json`에 씁니다. 모델은 `sessions.py`가 버리므로 `mine.py`가 원본 줄을 따로 읽습니다. 2026-11-19 기준 302건이 나왔습니다. 실험 runner의 cwd(이 repo의 `experiments/` 아래)에서 생긴 세션은 실험 호출이라 기본으로 제외합니다(`--exclude-cwd`로 추가).
 2. 사람이 고릅니다. 이번에 쓴 기준은 다섯 가지입니다.
    - 반응이 90자 이하이고 "뭔 말", "무슨 말", "뜻", "이해"를 포함합니다.
    - 직전 답변이 250~2200자입니다.

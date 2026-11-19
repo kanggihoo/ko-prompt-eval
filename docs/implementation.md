@@ -94,13 +94,13 @@ assistant: <prior_answer>
 - 패키지는 `koeval/`이고, adapter는 `koeval/adapters/{claude,codex,agy}.py`입니다.
 - 공통 계약은 `run(prompt, variant_path|None, model) → 정규화된 행 + raw + injection`입니다. 순수 JSON이나 이벤트 스트림 파싱은 adapter 안에 둡니다.
 - 실행은 직렬로 합니다. 같은 case, 모델, repeat 안에서 변형 순서는 seed로 섞고 실제 순서를 기록합니다(D-18).
-- 모든 호출은 전용 cwd `/tmp/koeval-run`에서 합니다(D-14).
+- 모든 호출은 그 실험 폴더를 cwd로 해서 합니다(D-14). harness 전까지는 `scripts/run_case.py`가 임시 runner입니다.
 
 ### Adapter별 명령
 
 | adapter | 명령 | 상태 |
 |---|---|---|
-| Claude | `claude -p --safe-mode --tools "" --strict-mcp-config --no-session-persistence --output-format json --model <m> [--append-system-prompt-file <변형>] -- "<prompt>"` | `--safe-mode`, `--tools ""`, JSON 출력 확인. `--strict-mcp-config`는 안전장치(5절) |
+| Claude | `claude -p --safe-mode --tools "" --strict-mcp-config --no-session-persistence --settings '{"includeGitInstructions":false}' --output-format json --model <m> [--append-system-prompt-file <변형>] -- "<prompt>"` | `--safe-mode`, `--tools ""`, JSON 출력 확인. `--strict-mcp-config`는 안전장치(5절) |
 | Codex | `codex exec --ephemeral --ignore-user-config --sandbox read-only --skip-git-repo-check -m <m> --json …` (빈 cwd) | flag가 있는지는 `codex exec --help`로 확인. 격리와 text-only 여부는 미확인 (T6) |
 | agy | `agy -p --output-format json --model gemini-3.8-flash-<level> --print-timeout <t> …` (빈 cwd, `--sandbox`) | print mode와 JSON 확인. 격리와 skill 목록 노출은 미확인 (T12) |
 
@@ -121,7 +121,7 @@ assistant: <prior_answer>
 - **`--bare`:** `ANTHROPIC_API_KEY`나 apiKeyHelper만 읽고 구독 로그인을 읽지 않아서 쓰지 않습니다. 문서상 앞으로 `-p` 기본값이 bare가 될 예정입니다. 그렇게 바뀌면 이 harness가 깨질 수 있으니 CLI를 업데이트한 뒤에는 한 번 확인합니다.
 - **Codex 격리 flag:** `--ephemeral`과 `--ignore-user-config`는 `codex exec` 전용입니다. `project_doc_max_bytes=0`은 전역 `AGENTS.md`를 끄지 못합니다([`cost-notes.md`](cost-notes.md) 2절). skills 목록과 plugins를 끄는 설정 조합은 T6에서 확인합니다.
 - **cache와 비용 해석:** cache 쓰기와 읽기는 가격이 다릅니다. pilot에서 `explain-clearly` 본문 약 1.5k token은 cache 쓰기로 처리됐습니다. 그래서 변형 사이 비용은 같은 repeat 번호끼리 비교하고, cache 성분을 함께 봅니다. cache를 쓰지 않은 입력이 줄었다고 요금이 그만큼 줄었다고 읽지 않습니다.
-- **로그 오염:** `agy -p`는 호출마다 agy 로그에 대화를 남깁니다. `claude -p`도 `--no-session-persistence` 없이는 세션을 남깁니다. 2026-11-19 canary 호출이 `/private/tmp/iso-test` 세션으로 남은 것을 확인했습니다. `mine.py`는 기본으로 `/tmp/koeval-run`을 realpath로 비교해 제외합니다(`--exclude-cwd`로 추가 가능).
+- **로그 오염:** `agy -p`는 호출마다 agy 로그에 대화를 남깁니다. `claude -p`도 `--no-session-persistence` 없이는 세션을 남깁니다. 2026-11-19 canary 호출이 `/private/tmp/iso-test` 세션으로 남은 것을 확인했습니다. `mine.py`는 기본으로 이 repo의 `experiments/`를 realpath로 비교해 제외합니다(`--exclude-cwd`로 추가 가능).
 - **격리 확인은 매번 하지 않습니다(D-12).** 결과가 이상하면 먼저 확인할 것은 이렇습니다.
   - baseline 출력이 전역 규칙(예: 5줄의 "결론 먼저")을 따르는 것처럼 보이는가.
   - 출력에 skill 이름이나 hook 문구가 나오는가.

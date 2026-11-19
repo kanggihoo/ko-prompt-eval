@@ -6,7 +6,7 @@
 
 ## 규칙
 
-- 실험 호출은 `/tmp/koeval-run`에서 하고, `claude -p`는 `--safe-mode --tools "" --strict-mcp-config --no-session-persistence`로 돌린다. 비교할 변형만 `--append-system-prompt-file`로 넣고, prompt 앞에는 `--`를 둔다. 결과가 이상하거나 flag를 바꾸면 canary로 확인한다 (`docs/test-plan.md` T1).
+- 실험은 `scripts/run_case.py`로 돌린다. 호출 cwd는 결과를 남기는 실험 폴더이고, `claude -p`는 `--safe-mode --tools "" --strict-mcp-config --no-session-persistence --settings '{"includeGitInstructions":false}'`로 돌린다. 비교할 변형만 `--append-system-prompt-file`로 넣고, prompt 앞에는 `--`를 둔다. 결과가 이상하거나 flag를 바꾸면 canary로 확인한다 (`docs/test-plan.md` T1).
 - `data/cases.jsonl`의 `gap`은 생성 모델과 사람 판정 화면에 보여 주지 않는다. `context_ok`는 결과를 보기 전에 정한다.
 - 실행 결과는 `experiments/<YYYY-MM-DD>-<이름>/`에 새 폴더로 남긴다. 이전 실험 폴더는 고치지 않는다.
 - `variants/`는 실험 시점의 snapshot이다. 원본 스킬이 바뀌면 덮어쓰지 말고, 바뀐 원본을 새 이름으로 추가하거나 실험 폴더에 원본 commit을 적는다.

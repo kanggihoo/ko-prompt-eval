@@ -14,7 +14,12 @@ harness를 만들기 전과 만드는 중에 실행해서 확인할 사실(T)과
   - Claude Code를 업데이트한 뒤 `-p` 기본 동작이 바뀌었을 수 있을 때. 문서상 `-p`가 bare로 바뀔 예정입니다.
 - **같이 볼 것:**
   - skill 목록이 비어 있는지.
-  - 현재 폴더의 `CLAUDE.md`, `AGENTS.md`를 읽지 않는지. 실험 cwd는 `/tmp/koeval-run`이지만 확인해 둡니다.
+  - 현재 폴더의 `CLAUDE.md`, `AGENTS.md`를 읽지 않는지.
+- **repo 안 cwd (2026-11-19, Haiku, claude 2.1.328, Windows):** cwd를 `experiments/` 아래 폴더로 두고 물었습니다.
+  - `--safe-mode`만으로는 git branch(`main`)와 최근 commit 메시지가 context에 있었습니다. commit 메시지에는 "gap은 judge 평가 기준으로만 사용" 같은 실험 설계가 들어 있습니다.
+  - `--settings '{"includeGitInstructions":false}'`를 더하면 git 저장소라는 사실만 남고 branch, status, commit 메시지는 빠졌습니다. 입력은 3,576에서 3,191 token으로 줄었습니다.
+  - 두 경우 모두 `AGENTS.md`, `CLAUDE.md` 내용은 없었습니다.
+  - cwd 경로(`…\ko-prompt-eval\experiments\…`)는 모델이 알고 있습니다.
 
 ### T2. 변형이 들어가고, 도구가 꺼지는가
 
